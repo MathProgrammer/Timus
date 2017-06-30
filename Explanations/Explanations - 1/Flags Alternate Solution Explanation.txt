@@ -1,0 +1,40 @@
+On the Day of the Flag of Russia a shop-owner decided to decorate the show-window of his shop with textile stripes of white, blue and red colors. 
+He wants to satisfy the following conditions:
+Stripes of the same color cannot be placed next to each other.
+A blue stripe must always be placed between a white and a red or between a red and a white one.
+Determine the number of the ways to fulfill his wish.
+
+--------------------------------------------------------
+f(R, 1) = f(W, 1) = 1
+
+For all i > 1,
+
+f(R, i) = f(W, i - 1) + f(W, i - 2)  ... First time RW, then RBW
+f(W, i) = f(R, i - 1) + f(R, i - 2) .... First time WR, then WBR
+
+Answer is f(R, n) + f(W, n)
+
+--------------------------------------------------
+
+Another way to drop the dimension is to 
+
+f(n) = 2*[f(n - 1)/2 + f(n - 2)/2] = f(n - 1) + f(n - 2)
+
+---------------------------------------------------------
+
+int main()
+{
+    int no_of_strips;
+    scanf("%d", &no_of_strips);
+
+    vector <long long> no_of_flags(no_of_strips + 1, 0);
+
+    no_of_flags[1] = 2;
+    for(int i = 2; i <= no_of_strips; i++)
+    {
+        no_of_flags[i] = no_of_flags[i - 1] + no_of_flags[i - 2];
+    }
+
+    printf("%lld\n",no_of_flags[no_of_strips]);
+    return 0;
+}

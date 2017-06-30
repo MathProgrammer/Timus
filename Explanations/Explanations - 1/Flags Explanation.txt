@@ -1,0 +1,71 @@
+On the Day of the Flag of Russia a shop-owner decided to decorate the show-window of his shop with textile stripes of white, blue and red colors. 
+He wants to satisfy the following conditions:
+Stripes of the same color cannot be placed next to each other.
+A blue stripe must always be placed between a white and a red or between a red and a white one.
+Determine the number of the ways to fulfill his wish.
+
+--------------------------------------------------------
+
+This is the first DP problem that I've solved on my own completely without looking at any solutions !
+
+At first, I tried to come up with the following recurrence by making the following observations - first flag has to be either red or white.
+
+
+If the first flag is red and second flag is white ... then it is like a sequence of length(n - 1) starting at second position.
+If the first flag is blue and second flag is blue, third flag is forced to be white, then it is like a sequence of length (n - 2) starting at third position.
+
+f(i) = f(i - 1) + f(i - 2)
+
+Situation is symmetric if first flag is white so ...
+
+f(i) = 2[f(i - 1) + f(i - 2)]
+
+But, this solution is WRONG. Why ?
+
+Because it over counts ... Let the first flag be R, second be W ... when we calculate f(i -1) starting with R ... we don't want all strings starting with R. 
+We just want the strings starting with W. ... Otherwise, we will be counting  .... RWR, RRW ... 
+
+so, one way to make this simple is to just introduce another dimension ! Let f(A, i) denotes the number of strings of length i starting with A.
+
+----------------------------------------
+
+f(R, 1) = f(W, 1) = 1
+
+For all i > 1,
+
+f(R, i) = f(W, i - 1) + f(W, i - 2)  ... First time RW, then RBW
+f(W, i) = f(R, i - 1) + f(R, i - 2) .... First time WR, then WBR
+
+Answer is f(R, n) + f(W, n)
+
+--------------------------------------------------
+
+Another way to drop the dimension is to 
+
+f(n) = 2*[f(n - 1)/2 + f(n - 2)/2] = f(n - 1) + f(n - 2)
+
+---------------------------------------------------------
+
+int main()
+{
+    const int RED = 0, WHITE = 1;
+
+    int no_of_strips;
+    scanf("%d", &no_of_strips);
+
+    vector <vector <long long> > no_of_flags(2, vector <long long> (no_of_strips + 1, 0));
+
+    //no_of_flags(RED, i) means no of combinations starting with RED flag of length i
+
+    no_of_flags[RED][1] = no_of_flags[WHITE][1] = 1;
+    for(int i = 2; i <= no_of_strips; i++)
+    {
+        no_of_flags[RED][i] = no_of_flags[WHITE][i - 1] + no_of_flags[WHITE][i - 2]; //RW and RBW
+        no_of_flags[WHITE][i] = no_of_flags[RED][i - 1] + no_of_flags[RED][i - 2]; //WR and WBR
+    }
+
+    printf("%lld\n", no_of_flags[RED][no_of_strips] + no_of_flags[WHITE][no_of_strips]);
+
+
+    return 0;
+}
