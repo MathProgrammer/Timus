@@ -1,0 +1,60 @@
+
+Consider a number in base k ... It can be written as -
+
+a_n k^n + a_{n-1}k^{n-1} + ... + a_1.k + a_0
+
+Writing k = (k - 1) + 1,
+
+We know that (a + b)^n has all it's terms in it's binomial expansion as multiples of a except b^n.
+
+(a_n (k - 1)^n) + (a_{n-1} (k-1)^{n-1}) + ... + a_1. (k - 1) ) ... + (a_n.1 + a_{n-1} + ... + a_1 + a_0)
+
+All terms are multiples of (k - 1)... We only have to check if the last terms is a multiple of k-1.
+
+In other words, if the sum of digits is a muliple of k-1, then the number is a multiple of k-1.
+
+------------------------------------------------------
+
+The minimum base the number can be a part of is either 2 or 1 more than the maximum digit in the number ... (whichever is greater)
+If the number is 000 , it is base 2 and not base 1. 
+
+----------------------------------------
+
+Had several bugs here.
+
+I was displaying -1 in case of error instead of no solution.
+Made a small mistake in converting from character to number as well.
+The string size was 1e6 + 1, Didn't leave extra character for null.
+Was starting from base + 1 and going till 36 ... Instead of base-1 till 35.
+
+---------------------------------------------------------
+
+int main()
+{
+    char number[MAX_LENGTH];
+    scanf("%s", number);
+
+    int minimum_base = 2;
+    int digit_sum = 0;
+    for(int i = 0; number[i] != '\0'; i++)
+    {
+        int current_number = (number[i] >= 'A' && number[i] <= 'Z' ? 10 + number[i] - 'A' : number[i] - '0');
+
+        digit_sum += current_number;
+        minimum_base = max(minimum_base, current_number + 1);
+    }
+
+    const int MAX_BASE = 36;
+    int answer = -1;
+    for(int i = minimum_base - 1; i < MAX_BASE; i++)
+    {
+        if(digit_sum%i == 0)
+        {
+            answer = i + 1;
+            break;
+        }
+    }
+
+    printf(answer == -1 ?  "No solution.\n" : "%d\n", answer);
+    return 0;
+}
