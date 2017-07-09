@@ -1,0 +1,58 @@
+Old contest software uses bubble sort for generating final standings. But now, there are too many teams and that software works too slow. 
+You are asked to write a program, which generates exactly the same final standings as old software, but fast.
+
+-------------------------------------------
+
+Store the information in a structure and then sort it using the STL sort after writing your own callback comparison function. I got WA. I was shocked since I couldn't under
+stand what could possibly go wrong. 
+
+Then, I looked closer and saw that if the problems solved were equal, then the position on the board was used to break the tie.
+
+25 7
+15 7,
+
+Then 25 would come first. I put in another variable in the structure and modified the comparison function.
+
+Another way to do this is to use stable_sort. This preserves the relative order among equal elements.
+
+----------------------------------
+
+struct team_data
+{
+    int position;
+	int id;
+	int problems_solved;
+};
+
+bool compare_teams(const team_data &P, const team_data &Q) //true if P comes before Q
+{
+	if(P.problems_solved > Q.problems_solved)
+		return true;
+	else if(P.problems_solved < Q.problems_solved)
+		return false;
+
+    if(P.position < Q.position)
+        return true;
+    else
+        return false;
+}
+
+int main()
+{
+	int no_of_teams;
+	scanf("%d", &no_of_teams);
+
+	vector <team_data> team(no_of_teams);
+	for(int i = 0; i < no_of_teams; i++)
+    {
+        scanf("%d %d", &team[i].id, &team[i].problems_solved);
+        team[i].position = i;
+    }
+
+	sort(all(team), &compare_teams);
+
+	for(int i = 0; i < no_of_teams; i++)
+		printf("%d %d\n",team[i].id, team[i].problems_solved);
+
+	return 0;
+}
