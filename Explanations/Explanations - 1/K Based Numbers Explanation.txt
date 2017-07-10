@@ -1,0 +1,57 @@
+Here's the idea for the DP.
+
+Let f(i) be the number of valid strings of length i.
+
+f(1) = base ... (This is the only case allowed to have leading 0s).
+
+Consider a string of length i. ... The first digit is not allowed to be 0 and can be chosen in k-1 ways.
+
+For the second digit, we have two choices - either it is non-zero or it is 0.
+
+If it is non-zero, it is counted by f(i - 1).
+
+If it is 0, then the third digit cannot be 0, it is counted by f(i - 2).
+
+f(1) = k
+f(i) = (k - 1)*( f(i - 1) + f(i - 2) )
+
+However, there is one exception to this case. ... Consider a string of length 3, first digit can be chosen in k-1 ways.
+
+Second digit can be 0 or non-zero ... We have already counted the non-zero in f(2) ... If it is 0, then it is the number of ways of choosing the third digit non-zero.
+Normally, this is f(i - 2), but f(1) is allowed to be 0 so we count the string ending with 00 ... This is wrong.
+
+f(3) is the only case, where we must consider f(i - 2) - 1, instead of f(i - 2).
+i = 3, is the only i for which a string of length i-2 is allowed to start with 0.
+
+We can get around this by having three base cases.
+
+f(1) = k,
+f(2) = (k-1)*k
+f(3) = (k-1)*[ f(2) + (k-1)], Second digit may be non-zero [f(2)] ... If it is 0, first digit has k-1 choices.
+
+f(i) = (k-1)*[ f(i - 1) + f(i - 3)]
+
+------------------------------------------------------
+
+int main()
+{
+    int length, base;
+    scanf("%d %d", &length, &base);
+
+    vector <long long> no_of_valid_numbers_of_length(length + 5);
+    no_of_valid_numbers_of_length[1] = base; //First digit can be any digit
+    no_of_valid_numbers_of_length[2] = (base - 1)*base; //No leading 0s.
+    no_of_valid_numbers_of_length[3] = (base - 1)*( no_of_valid_numbers_of_length[2] + (base - 1) );//Second digit can be non-0. If it is 0, last digit has n-1 choices.
+
+    for(int i = 4; i <= length; i++)
+    {
+        //First digit can be chosen in base - 1 ways. After that, the second digit may be non-zero, counted by f(i-1),
+        //Or second digit may be 0, in which case third digit can't be 0, counted by f(i-2).
+
+        no_of_valid_numbers_of_length[i] = (base - 1)*( no_of_valid_numbers_of_length[i - 1] + no_of_valid_numbers_of_length[i - 2]);
+    }
+
+    printf("%I64d\n", no_of_valid_numbers_of_length[length]);
+    return 0;
+}
+
