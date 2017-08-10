@@ -28,10 +28,7 @@ int main()
             if(bricks >= last_height)
             {
                 no_of_ways[bricks][last_height] += no_of_ways[bricks - last_height][last_height - 1];
-                //printf("f(%d, %d) = %I64d + \t", bricks, last_height, no_of_ways[bricks][last_height]);
-                //printf("f(%d, %d) = %I64d\n", bricks - last_height, last_height - 1, no_of_ways[bricks - last_height][last_height - 1]);
             }
-            //printf("f(%d, %d) = %I64d\n", bricks, last_height, no_of_ways[bricks][last_height]);
         }
     }
 
