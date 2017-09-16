@@ -1,0 +1,31 @@
+Little Boy is mad at Karlsson, who ate all the sweets in the flat and even went to the neighbours to eat their sweets too. 
+Now Little Boy's parents brought home a chocolate bar, and, 
+sure enough, Karlsson is here already and wants to eat it. However, this time Little Boy has firmly decided that not a single piece of chocolate will go to this glutton. 
+Little Boy wants to use Karlsson's addiction to the games of chance and suggests playing the following game. 
+A chocolate bar can be considered as a rectangle of square “units” arranged in m rows and n columns and separated by “lines”. Two players take alternate turns. 
+At his turn, a player must take one piece of chocolate and split it into two along one of the lines. If a player can't make a legal move 
+(which happens when all pieces of chocolate consist of a single unit square), he loses, and the winner takes all the chocolate.
+But Karlsson is smart enough! He immediately understood who should make the first turn in order for Karlsson to win, assuming that players take optimal turns. 
+Can you guess that?
+
+----------------------------------------------
+
+The number of pieces increases by 1 in each turn and becomes nm at the end.
+
+It is even after the first player's turn and odd after the second player's turn.
+
+The parity of the number of pieces at the end tells us the winner.
+
+----------------------------------------
+
+int main()
+{
+    int row, column;
+    scanf("%d %d", &row, &column);
+
+    int no_of_pieces_at_end = row*column;
+    printf(no_of_pieces_at_end%2 == 0 ? "[:=[first]" : "[second]=:]");
+
+    return 0;
+}
+
