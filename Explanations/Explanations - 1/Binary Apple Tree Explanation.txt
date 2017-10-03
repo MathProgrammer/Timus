@@ -1,0 +1,108 @@
+Let's imagine how apple tree looks in binary computer world. You're right, it looks just like a binary tree, i.e. any biparous branch splits up to exactly two new branches.
+ We will enumerate by integers the root of binary apple tree, points of branching and the ends of twigs. 
+This way we may distinguish different branches by their ending points. 
+We will assume that root of tree always is numbered by 1 and all numbers used for enumerating are numbered in range from 1 to N, 
+where N is the total number of all enumerated points. For instance in the picture below N is equal to 5. Here is an example of an enumerated tree with four branches:
+
+2   5
+ \ / 
+  3   4
+   \ /
+    1
+As you may know it's not convenient to pick an apples from a tree when there are too much of branches. 
+That's why some of them should be removed from a tree. But you are interested in removing branches in the way of minimal loss of apples. 
+So your are given amounts of apples on a branches and amount of branches that should be preserved. 
+Your task is to determine how many apples can remain on a tree after removing of excessive branches.
+
+------------------------------------------------------
+
+Let f(v, b) be the maximum amount of apples that can be saved at the tree rooted at v with b branches preserved.
+
+At node v, we have some choices.
+
+Case 1- choose one edge. f(v, b) = apple_1 + f(v1, b - 1)
+
+Case 2- choose the other edge. f(v, b) = apple_2 + f(v2, b - 1)
+
+Case 3- Choose both edges. Now, we need to choose two subtrees - one rooted at v1 and one rooted at v2 with a total of b - 2 branches preserved between them.
+
+	f(v, b) = max{apple_1 + f(v1, i) + apple_2 + f(v2, b - 2 - i)}, for all i from 0 to b-2
+
+f(v,b) = max of these three cases.
+
+If b = 0, f(v, b) = 0.
+
+-----------------------------------------------------------------------------------
+
+const int MAX_VERTICES = 100 + 5, ROOT = 1;
+typedef pair <int, int> pair_int;
+typedef unsigned int u_int;
+
+int max_apples_from[MAX_VERTICES][MAX_VERTICES];
+vector <pair_int> tree[MAX_VERTICES];
+
+int get_max_apples_from(int parent, int v, int removed_branches)
+{
+    if(max_apples_from[v][removed_branches] == -1)
+    {
+        max_apples_from[v][removed_branches] = 0;
+
+        if(removed_branches == 0) return max_apples_from[v][removed_branches];
+
+        int child_1 = 0, apples_1 = 0, child_2 = 0, apples_2 = 0;
+        for(u_int i = 0; i < tree[v].size(); i++)
+        {
+            if(parent == tree[v][i].first) continue;
+
+            if(child_1 == 0)
+            {
+                child_1   = tree[v][i].first;
+                apples_1  = tree[v][i].second;
+
+                max_apples_from[v][removed_branches] = max(apples_1 + get_max_apples_from(v, child_1, removed_branches - 1),
+                                                           max_apples_from[v][removed_branches]);
+            }
+            else
+            {
+                child_2   = tree[v][i].first;
+                apples_2  = tree[v][i].second;
+
+                max_apples_from[v][removed_branches] = max(apples_2 + get_max_apples_from(v, child_2, removed_branches - 1),
+                                                           max_apples_from[v][removed_branches]);
+
+            }
+        }
+
+        for(int i = 0; i <= removed_branches - 2; i++)
+        {
+            max_apples_from[v][removed_branches] = max(apples_1 + get_max_apples_from(v, child_1, removed_branches - 2 - i) +
+                                                       apples_2 + get_max_apples_from(v, child_2, i) ,
+                                                       max_apples_from[v][removed_branches]);
+
+        }
+    }
+
+    return max_apples_from[v][removed_branches];
+}
+
+int main()
+{
+    int no_of_vertices, removed_branches;
+    scanf("%d %d", &no_of_vertices, &removed_branches);
+
+    for(int i = 1; i < no_of_vertices; i++)
+    {
+        int x, y, apples;
+        scanf("%d %d %d", &x, &y, &apples);
+
+        tree[x].push_back(make_pair(y, apples));
+        tree[y].push_back(make_pair(x, apples));
+    }
+
+    memset(max_apples_from, -1, sizeof(max_apples_from));
+
+    int maximum_apples = get_max_apples_from(0, ROOT, removed_branches);
+    printf("%d\n", maximum_apples);
+
+    return 0;
+}
