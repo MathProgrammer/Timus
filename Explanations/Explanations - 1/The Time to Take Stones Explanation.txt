@@ -1,0 +1,55 @@
+You probably know the game where two players in turns take 1 to 3 stones from a pile. Looses the one who takes the last stone. We'll generalize this well known game. 
+Assume that both of the players can take not 1, 2 or 3 stones, but k1, k2, …, km ones. Again we'll be interested in one question: who wins in the perfect game. 
+It is guaranteed that it is possible to make next move irrespective to already made moves.
+
+---------------------------------------------------
+
+In any given position, player 1 checks if he can make a move that takes the game to a position which is winning for player 2. 
+(Because he becomes player 2 after making a move)
+
+The winner when there are 0 piles is the first player.
+
+-------------------------------------------------
+
+inline int legal(int current_move, int total_stones)
+{
+    return (current_move <= total_stones);
+}
+
+int get_winner(int no_of_stones, vector <int> &moves)
+{
+    vector <int> winner(no_of_stones + 1, 0);
+
+    winner[0] = 1;
+
+    for(int stones = 1; stones <= no_of_stones; stones++)
+    {
+        winner[stones] = 2;
+
+        for(int j = 0; j < moves.size(); j++)
+        {
+            if(legal(moves[j], stones) && winner[stones - moves[j]] == 2)
+            {
+                winner[stones] = 1;
+                break;
+            }
+        }
+    }
+
+    return winner[no_of_stones];
+}
+
+int main()
+{
+    int no_of_stones, no_of_moves;
+    scanf("%d %d", &no_of_stones, &no_of_moves);
+
+    vector <int> moves(no_of_moves);
+    for(int i = 0; i < no_of_moves; i++)
+        scanf("%d", &moves[i]);
+
+    int winner = get_winner(no_of_stones, moves);
+    printf("%d\n", winner);
+
+    return 0;
+}
