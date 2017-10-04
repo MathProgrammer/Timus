@@ -1,0 +1,64 @@
+Every day, farmer Ion (this is a Romanian name) takes out all his horses, so they may run and play. 
+When they are done, farmer Ion has to take all the horses back to the stables. In order to do this, he places them in a straight line and they follow him to the stables. 
+Because they are very tired, farmer Ion decides that he doesn't want to make the horses move more than they should. 
+So he develops this algorithm: he places the 1st P1 horses in the first stable, the next P2 in the 2nd stable and so on. 
+Moreover, he doesn't want any of the K stables he owns to be empty, and no horse must be left outside. 
+Now you should know that farmer Ion only has black or white horses, which don't really get along too well. 
+If there are i black horses and j white horses in one stable, then the coefficient of unhappiness of that stable is i*j. 
+The total coefficient of unhappiness is the sum of the coefficients of unhappiness of every of the K stables.
+Determine a way to place the N horses into the K stables, so that the total coefficient of unhappiness is minimized.
+
+----------------------------------------------------------------
+
+Let f(i, k) represent the minimum unhappiness with k stables among the first i horses.
+
+Notice that among i horses, there can be atmost k stables or at least one of them will be empty.
+
+f(0, 0) = 0, (If there are 0 horses and 0 stables, there is no unhappiness)
+
+Otherwise, f(i, k) = min{unhappiness + f(j, k - 1)}
+
+for all j < i.
+
+Unhappiness is the unhappiness in the stable from j + 1 to i. 
+
+Answer = f(n, k)
+
+-------------------------------------------------------------------------------
+
+int main()
+{
+    int no_of_horses, no_of_stables;
+    scanf("%d %d", &no_of_horses, &no_of_stables);
+
+    vector <int> colour(no_of_horses + 1);
+    vector <int> black_horses_till(no_of_horses + 1, 0);
+    for(int i = 1; i <= no_of_horses; i++)
+    {
+        scanf("%d", &colour[i]);
+        black_horses_till[i] = (colour[i] == 1) + black_horses_till[i - 1];
+    }
+
+    typedef vector <int> v_int;
+    vector <v_int> minimum_unhappiness_till(no_of_horses + 1, v_int(no_of_stables + 1, 1e9));
+
+    minimum_unhappiness_till[0][0] = 0;
+
+    for(int i = 1; i <= no_of_horses; i++)
+    {
+        for(int k = 1; k <= min(i, no_of_stables); k++)
+        {
+            for(int j = 0; j < i; j++)
+            {
+                int horses_in_stable = i - j;
+                int black_horses = black_horses_till[i] - black_horses_till[j], white_horses = horses_in_stable - black_horses;
+                int unhappiness = white_horses*black_horses;
+
+                minimum_unhappiness_till[i][k] = min(minimum_unhappiness_till[i][k], unhappiness + minimum_unhappiness_till[j][k - 1]);
+            }
+        }
+    }
+
+    printf("%d\n", minimum_unhappiness_till[no_of_horses][no_of_stables]);
+    return 0;
+}
