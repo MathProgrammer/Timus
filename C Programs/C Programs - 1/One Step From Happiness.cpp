@@ -1,0 +1,28 @@
+#include <cstdio>
+
+int digit_sum(int n)
+{
+    int sum = 0;
+
+    while(n)
+    {
+        sum += n%10;
+        n /= 10;
+    }
+
+    return sum;
+}
+
+int is_lucky(int n)
+{
+    return ( digit_sum(n/1000) == digit_sum(n%1000) );
+}
+
+int main()
+{
+    int ticket;
+    scanf("%d", &ticket);
+
+    printf(is_lucky(ticket + 1) || is_lucky(ticket - 1) ? "Yes\n" : "No\n");
+    return 0;
+}
