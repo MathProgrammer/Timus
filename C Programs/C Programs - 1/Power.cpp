@@ -1,0 +1,42 @@
+#include <cstdio>
+#include <vector>
+
+using namespace std;
+
+int power_mod(int x, int power, int mod)
+{
+    int result = 1;
+
+    while(power)
+    {
+        if(power%2 == 1)
+            result = (result*x)%mod;
+
+        x = (x*x)%mod;
+        power = power >> 1;
+    }
+
+    return result;
+}
+
+int main()
+{
+    int power, mod, target;
+    scanf("%d %d %d", &power, &mod, &target);
+
+    vector <int> solution;
+
+    for(int i = 1; i < mod; i++)
+    {
+        if(power_mod(i, power, mod) == target)
+            solution.push_back(i);
+    }
+
+    if(solution.size() == 0)
+        printf("-1\n");
+
+    for(int i = 0; i < solution.size(); i++)
+        printf("%d ", solution[i]);
+
+    return 0;
+}
